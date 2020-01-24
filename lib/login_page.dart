@@ -10,10 +10,11 @@ class LoginPage extends StatefulWidget {
   @override
   _LoginPageState createState() => _LoginPageState();
 }
-
+var jsonResponse;
 class _LoginPageState extends State<LoginPage> {
 
   bool _isLoading = false;
+
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +49,7 @@ class _LoginPageState extends State<LoginPage> {
 
     print(email);
     print(pass);
-    var jsonResponse = null;
+    jsonResponse = null;
     var headers = {
       'content-type': 'application/json'
     };
@@ -56,15 +57,22 @@ class _LoginPageState extends State<LoginPage> {
     print("check response");
     print(response.statusCode);
     var body=json.decode(response.body);
-    print(response.body);
+    //print(response.body);
     if(response.statusCode == 200) {
       print("check status code");
       jsonResponse = json.decode(response.body);
+
+
+
+
+
+
       if(jsonResponse != null) {
         setState(() {
           _isLoading = false;
         });
         sharedPreferences.setString("token", jsonResponse['response']['token']);
+        print(jsonResponse['response']['firstName']);
         Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (BuildContext context) => MainPage()), (Route<dynamic> route) => false);
       }
     }
@@ -75,6 +83,11 @@ class _LoginPageState extends State<LoginPage> {
       print(response.body);
     }
   }
+
+
+
+
+
 
   Container buttonSection() {
     return Container(
@@ -89,7 +102,7 @@ class _LoginPageState extends State<LoginPage> {
           });
           signIn(emailController.text, passwordController.text);
         },
-        elevation: 0.0,
+        //elevation: 0.0,
         color: Colors.purple,
         child: Text("Sign In", style: TextStyle(color: Colors.white70)),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(5.0)),
@@ -147,3 +160,36 @@ class _LoginPageState extends State<LoginPage> {
     );
   }
 }
+
+/*
+class Post {
+
+  final String firstName;
+  final String lastName;
+
+
+  Post({this.firstName, this.lastName});
+
+  factory Post.fromJson(Map<String, dynamic> json) {
+    return Post(
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+
+    );
+  }
+}
+Future<Post> fetchPost() async {
+  //final response =
+  //await http.get('https://jsonplaceholder.typicode.com/posts/1');
+
+  if (jsonResponse.statusCode == 200) {
+    print("inside future fetchpost");
+    // If server returns an OK response, parse the JSON.
+    return Post.fromJson(json.decode(jsonResponse.body));
+
+  } else {
+    // If that response was not OK, throw an error.
+    throw Exception('Failed to load post');
+  }
+}
+*/
